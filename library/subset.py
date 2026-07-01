@@ -28,6 +28,7 @@ class BaseSubset:
         caption_dropout_rate: float,
         caption_dropout_every_n_epochs: int,
         caption_tag_dropout_rate: float,
+        caption_tag_dropout_exclude: Optional[str],
         caption_prefix: Optional[str],
         caption_suffix: Optional[str],
         token_warmup_min: int,
@@ -53,6 +54,10 @@ class BaseSubset:
         self.caption_dropout_rate = caption_dropout_rate
         self.caption_dropout_every_n_epochs = caption_dropout_every_n_epochs
         self.caption_tag_dropout_rate = caption_tag_dropout_rate
+        self.caption_tag_dropout_exclude = caption_tag_dropout_exclude
+        self.caption_tag_dropout_exclude_set: set = set()
+        if caption_tag_dropout_exclude:
+            self.caption_tag_dropout_exclude_set = set(t.strip().lower() for t in caption_tag_dropout_exclude.split(",") if t.strip())
         self.caption_prefix = caption_prefix
         self.caption_suffix = caption_suffix
 
@@ -92,6 +97,7 @@ class DreamBoothSubset(BaseSubset):
         caption_dropout_rate,
         caption_dropout_every_n_epochs,
         caption_tag_dropout_rate,
+        caption_tag_dropout_exclude,
         caption_prefix,
         caption_suffix,
         token_warmup_min,
@@ -120,6 +126,7 @@ class DreamBoothSubset(BaseSubset):
             caption_dropout_rate,
             caption_dropout_every_n_epochs,
             caption_tag_dropout_rate,
+            caption_tag_dropout_exclude,
             caption_prefix,
             caption_suffix,
             token_warmup_min,
@@ -163,6 +170,7 @@ class FineTuningSubset(BaseSubset):
         caption_dropout_rate,
         caption_dropout_every_n_epochs,
         caption_tag_dropout_rate,
+        caption_tag_dropout_exclude,
         caption_prefix,
         caption_suffix,
         token_warmup_min,
@@ -191,6 +199,7 @@ class FineTuningSubset(BaseSubset):
             caption_dropout_rate,
             caption_dropout_every_n_epochs,
             caption_tag_dropout_rate,
+            caption_tag_dropout_exclude,
             caption_prefix,
             caption_suffix,
             token_warmup_min,
@@ -230,6 +239,7 @@ class ControlNetSubset(BaseSubset):
         caption_dropout_rate,
         caption_dropout_every_n_epochs,
         caption_tag_dropout_rate,
+        caption_tag_dropout_exclude,
         caption_prefix,
         caption_suffix,
         token_warmup_min,
@@ -258,6 +268,7 @@ class ControlNetSubset(BaseSubset):
             caption_dropout_rate,
             caption_dropout_every_n_epochs,
             caption_tag_dropout_rate,
+            caption_tag_dropout_exclude,
             caption_prefix,
             caption_suffix,
             token_warmup_min,

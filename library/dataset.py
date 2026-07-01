@@ -582,8 +582,11 @@ class BaseDataset(torch.utils.data.Dataset):
                     if subset.caption_tag_dropout_rate <= 0:
                         return tokens
                     l = []
+                    exclude_set = getattr(subset, 'caption_tag_dropout_exclude_set', set())
                     for token in tokens:
-                        if random.random() >= subset.caption_tag_dropout_rate:
+                        if exclude_set and token.strip().lower() in exclude_set:
+                            l.append(token)
+                        elif random.random() >= subset.caption_tag_dropout_rate:
                             l.append(token)
                     return l
 

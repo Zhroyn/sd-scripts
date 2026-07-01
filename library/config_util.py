@@ -71,6 +71,7 @@ class BaseSubsetParams:
     caption_dropout_rate: float = 0.0
     caption_dropout_every_n_epochs: int = 0
     caption_tag_dropout_rate: float = 0.0
+    caption_tag_dropout_exclude: Optional[str] = None
     token_warmup_min: int = 1
     token_warmup_step: float = 0
     custom_attributes: Optional[Dict[str, Any]] = None
@@ -207,6 +208,7 @@ class ConfigSanitizer:
         "caption_dropout_every_n_epochs": int,
         "caption_dropout_rate": Any(float, int),
         "caption_tag_dropout_rate": Any(float, int),
+        "caption_tag_dropout_exclude": Any(None, str),
     }
     # DB means DreamBooth
     DB_SUBSET_ASCENDABLE_SCHEMA = {
