@@ -1090,6 +1090,18 @@ def add_dataset_arguments(
             default=None,
             help="Comma separated tags that will not be dropped by caption_tag_dropout_rate / caption_tag_dropout_rateでドロップされないタグ（カンマ区切り）",
         )
+        parser.add_argument(
+            "--caption_tag_dropin_list",
+            type=str,
+            default=None,
+            help="Comma separated tags that may be randomly added to caption / キャプションにランダムに追加される可能性のあるタグ（カンマ区切り）",
+        )
+        parser.add_argument(
+            "--caption_tag_dropin_rate",
+            type=float,
+            default=0.0,
+            help="Probability (0.0~1.0) for each tag in caption_tag_dropin_list to be added to the caption / caption_tag_dropin_listの各タグがキャプションに追加される確率(0.0~1.0)",
+        )
 
     if support_dreambooth:
         # DreamBooth dataset

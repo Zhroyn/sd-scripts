@@ -544,7 +544,7 @@ class BaseDataset(torch.utils.data.Dataset):
                 # if caption is multiline, use the first line
                 caption = caption.split("\n")[0]
 
-            if subset.shuffle_caption or subset.token_warmup_step > 0 or subset.caption_tag_dropout_rate > 0:
+            if subset.shuffle_caption or subset.token_warmup_step > 0 or subset.caption_tag_dropout_rate > 0 or subset.caption_tag_dropin_rate > 0:
                 fixed_tokens = []
                 flex_tokens = []
                 fixed_suffix_tokens = []
@@ -590,10 +590,25 @@ class BaseDataset(torch.utils.data.Dataset):
                             l.append(token)
                     return l
 
+                def dropin_tags(tokens):
+                    if subset.caption_tag_dropin_rate <= 0:
+                        return tokens
+                    dropin_list = getattr(subset, 'caption_tag_dropin_list_parsed', [])
+                    if not dropin_list:
+                        return tokens
+                    result = list(tokens)
+                    for tag in dropin_list:
+                        if random.random() < subset.caption_tag_dropin_rate:
+                            result.append(tag)
+                    return result
+
                 if subset.shuffle_caption:
                     random.shuffle(flex_tokens)
 
                 flex_tokens = dropout_tags(flex_tokens)
+
+                # Tag drop-in: randomly inject tags from the dropin list
+                flex_tokens = dropin_tags(flex_tokens)
 
                 caption = f"{subset.caption_separator} ".join(fixed_tokens + flex_tokens + fixed_suffix_tokens)
 
@@ -742,6 +757,7 @@ class BaseDataset(torch.utils.data.Dataset):
                     or subset.shuffle_caption
                     or subset.token_warmup_step > 0
                     or subset.caption_tag_dropout_rate > 0
+                    or subset.caption_tag_dropin_rate > 0
                 )
                 for subset in self.subsets
             ]
