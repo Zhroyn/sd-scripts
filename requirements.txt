@@ -23,6 +23,7 @@ huggingface-hub==0.34.3
 # for Image utils
 imagesize==1.4.1
 numpy
+torchvision
 # <=2.0
 # for BLIP captioning
 # requests==2.28.2
