@@ -196,6 +196,14 @@ def add_anima_training_arguments(parser: argparse.ArgumentParser):
         action="store_true",
         help="Enable cuDNN benchmark mode (may improve performance) / cuDNNのベンチマークモードを有効にする（パフォーマンスが向上する可能性がある）",
     )
+    parser.add_argument(
+        "--sample_image_suffix",
+        type=str,
+        default=None,
+        help="Suffix to append to saved sample images (e.g. '.txt' to disguise as text file). "
+        "If set, the image file will be renamed after saving. / 保存したサンプル画像に付加する拡張子（例: '.txt' でテキストファイルに偽装）。"
+        "指定すると、保存後にファイルがリネームされます。",
+    )
 
 
 def load_qwen_image_vae(args, device="cpu", disable_mmap: bool = True):
@@ -754,6 +762,14 @@ def _sample_image_inference(
     i = prompt_dict.get("enum", 0)
     img_filename = f"{'' if args.output_name is None else args.output_name + '_'}{num_suffix}_{i:02d}_{ts_str}{seed_suffix}.png"
     image.save(os.path.join(save_dir, img_filename))
+
+    # Rename image file if suffix is specified (e.g. to disguise as .txt)
+    if getattr(args, "sample_image_suffix", None):
+        old_path = os.path.join(save_dir, img_filename)
+        new_filename = img_filename + args.sample_image_suffix
+        new_path = os.path.join(save_dir, new_filename)
+        os.rename(old_path, new_path)
+        img_filename = new_filename
 
     # Log to wandb if enabled
     if "wandb" in [tracker.name for tracker in accelerator.trackers]:
